@@ -12,13 +12,10 @@ export class RotatingShape {
     for (let x in origShape) {
       const tempArray = []
       for (let y in origShape[x]) {
-        // console.log(origShape[y][x])
         tempArray.unshift(origShape[y][x])
       }
       newShape.push(tempArray.join(''))
     }
-    // this.shape = newShape.join('\n').concat('\n')
-    // return this.shape.toString()
     return newShape.join('\n').concat('\n')
   }
 
@@ -28,9 +25,7 @@ export class RotatingShape {
     for (let x in origShape) {
       const tempArray = []
       for (let y in origShape[x]) {
-        // console.log(origShape[x])
         tempArray.push(origShape[y][x])
-        console.log(tempArray)
       }
       newShape.unshift(tempArray.join(''))
     }
