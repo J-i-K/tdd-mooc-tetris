@@ -55,8 +55,11 @@ export class Board {
       const blockList = []
       for (let x in tetromino.shape) {
         for (let y in tetromino.shape[x]) {
-          blockList.push({'x':Number(x),'y': Number(Math.floor(this.width / 2) - Number(y))})
-          this.state[Number(x)][Number(Math.floor(this.width / 2) - Number(y))] = tetromino.shape[x][y]
+          if (tetromino.shape[x][y] !== '.') {
+            blockList.push({'x':Number(x),'y': Number(Math.floor(this.width / 2) - Number(y))})
+            console.log('blockList: ', blockList, 'tetromino shape: ', tetromino.shape[x][y])
+            this.state[Number(x)][Number(Math.floor(this.width / 2) - Number(y))] = tetromino.shape[x][y]
+          }
         }
       }
       let newTetromino = {'id':Number(this.boardTetrominoes.length), 'shape': tetromino.shape,'isFalling': true, 'blockList': blockList}
@@ -95,28 +98,27 @@ export class Board {
 
   tick() {
       if (this.hasFalling()) {
-        for (let tetromino in this.boardTetrominoes) {
-          for (let block in this.boardTetrominoes[tetromino].blockList) {
-            console.log('get the ball rolling', this.boardTetrominoes[tetromino].blockList[block].x, this.height - 1)
-            // console.log(this.state[0])
-            if (this.boardTetrominoes[tetromino].blockList[block].x < this.height - 1) {// Not on bottom row
-              console.log('not on bottom row, continuing')
-              if (this.state[Number(this.boardTetrominoes[tetromino].blockList[block].x) + 1][Number(this.boardTetrominoes[tetromino].blockList[block].y)] === '.') {
-                console.log('below is empty, hooray!')
-                this.state[Number(this.boardTetrominoes[tetromino].blockList[block].x) + 1][Number(this.boardTetrominoes[tetromino].blockList[block].y)] = this.boardTetrominoes[tetromino].shape
-                this.state[Number(this.boardTetrominoes[tetromino].blockList[block].x)][Number(this.boardTetrominoes[tetromino].blockList[block].y)] = '.'
-                console.log(this.state)
-                this.boardTetrominoes[tetromino].blockList[block].x++
-              } else { // Below is not empty so we must stop
-                console.log('so we hit this else here')
-                this.boardTetrominoes[tetromino].isFalling = false
-              }
-            } else if (this.boardTetrominoes[tetromino].blockList[block].x === this.height - 1) { // So this tetromino has reached the bottom
-              this.boardTetrominoes[tetromino].isFalling = false
-            } else {
-              console.log('did we end up in here instead?')
-              this.blockIsFalling = false
+        console.log('tick!')
+        const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
+        for (let block in fallingTetromino.blockList) {
+          console.log('get the ball rolling', fallingTetromino.blockList[block].x, this.height - 1)
+          // console.log(this.state[0])
+          if (fallingTetromino.blockList[block].x < this.height - 1) {// Not on bottom row
+            console.log('not on bottom row, continuing')
+            if (this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] === '.') {
+              console.log('below is empty, hooray!')
+              this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] = fallingTetromino.shape
+              this.state[Number(fallingTetromino.blockList[block].x)][Number(fallingTetromino.blockList[block].y)] = '.'
+              console.log(this.state)
+              this.boardTetrominoes[fallingTetromino.id].blockList[block].x++
+            } else { // Below is not empty so we must stop
+              console.log('so we hit this else here')
+              this.boardTetrominoes[fallingTetromino.id].isFalling = false
             }
+          } else if (this.boardTetrominoes[fallingTetromino.id].blockList[block].x === this.height - 1) { // So this tetromino has reached the bottom
+            this.boardTetrominoes[fallingTetromino.id].isFalling = false
+          } else {
+            console.log('did we end up in here instead?')
           }
         }
     }
