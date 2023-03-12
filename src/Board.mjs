@@ -101,6 +101,33 @@ export class Board {
   // }
 
   tick() {
+    if (this.hasFalling()) {
+      console.log('tick!')
+      const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
+      let tetrominoCanMove = true
+      for (let block in fallingTetromino.blockList.filter(function(blockA,blockB) {
+        return blockA.x < blockB.x && blockA.y === blockB.y ? blockB : blockA
+      })) {
+        if (fallingTetromino.blockList[block].x === this.height - 1 || // Bottom row, cannot move
+        this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] !== '.')  {// Not empty below, cannot move
+          tetrominoCanMove = false
+        } else {
+          console.log('else')
+        }
+      }
+      if (tetrominoCanMove) {
+        fallingTetromino.blockList.map(block => {
+          this.state[Number(block.x)][Number(block.y)] = '.'
+          block.x++
+          this.state[Number(block.x)][Number(block.y)] = fallingTetromino.shapeStyle
+        })
+      } else {
+        fallingTetromino.isFalling = false
+      }
+  }
+}
+
+  tickOld() {
       if (this.hasFalling()) {
         console.log('tick!')
         const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
