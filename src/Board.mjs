@@ -105,8 +105,22 @@ export class Board {
       console.log('tick!')
       const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
       let tetrominoCanMove = true
+      console.log(fallingTetromino.blockList.filter(function(blockA,blockB) {
+        if (blockA.y === blockB.y) {
+          return blockA.x > blockB.x ? blockA : blockB
+        } else if (!blockB) {
+          return blockA
+        } else {
+          return blockA, blockB
+        }}))
       for (let block in fallingTetromino.blockList.filter(function(blockA,blockB) {
-        return blockA.x < blockB.x && blockA.y === blockB.y ? blockB : blockA
+        if (blockA.y === blockB.y) {
+          return blockA.x > blockB.x ? blockA : blockB
+        } else if (!blockB) {
+          return blockA
+        } else {
+          return blockA, blockB
+        }
       })) {
         if (fallingTetromino.blockList[block].x === this.height - 1 || // Bottom row, cannot move
         this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] !== '.')  {// Not empty below, cannot move
@@ -116,6 +130,8 @@ export class Board {
         }
       }
       if (tetrominoCanMove) {
+        console.log('made it here?')
+        console.log(this.state)
         fallingTetromino.blockList.map(block => {
           this.state[Number(block.x)][Number(block.y)] = '.'
           block.x++
