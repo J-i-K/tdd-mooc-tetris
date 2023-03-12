@@ -105,25 +105,12 @@ export class Board {
       console.log('tick!')
       const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
       let tetrominoCanMove = true
-      console.log(fallingTetromino.blockList.filter(function(blockA,blockB) {
-        if (blockA.y === blockB.y) {
-          return blockA.x > blockB.x ? blockA : blockB
-        } else if (!blockB) {
-          return blockA
-        } else {
-          return blockA, blockB
-        }}))
-      for (let block in fallingTetromino.blockList.filter(function(blockA,blockB) {
-        if (blockA.y === blockB.y) {
-          return blockA.x > blockB.x ? blockA : blockB
-        } else if (!blockB) {
-          return blockA
-        } else {
-          return blockA, blockB
-        }
-      })) {
-        if (fallingTetromino.blockList[block].x === this.height - 1 || // Bottom row, cannot move
-        this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] !== '.')  {// Not empty below, cannot move
+      for (let block in fallingTetromino.blockList) {
+        if ( fallingTetromino.blockList.filter(listBlock => listBlock.x === Number(fallingTetromino.blockList[block].x + 1) && listBlock.y === Number(fallingTetromino.blockList[block].y)).length !== 0) {
+          console.log('there is another block that is below this one from the same tetromino')
+        } else if (fallingTetromino.blockList[block].x === this.height - 1 || // Bottom row, cannot move
+        this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] !== '.') {// Not empty below, cannot move
+          console.log('hit cannot move for block: ', fallingTetromino.blockList[block])
           tetrominoCanMove = false
         } else {
           console.log('else')
@@ -131,8 +118,9 @@ export class Board {
       }
       if (tetrominoCanMove) {
         console.log('made it here?')
-        console.log(this.state)
-        fallingTetromino.blockList.map(block => {
+        // console.log(this.state)
+        console.log(fallingTetromino.blockList.sort(function(a,b){return a.x - b.x}).reverse())
+        fallingTetromino.blockList.sort(function(a,b){return a.x - b.x}).reverse().map(block => {
           this.state[Number(block.x)][Number(block.y)] = '.'
           block.x++
           this.state[Number(block.x)][Number(block.y)] = fallingTetromino.shapeStyle
@@ -140,8 +128,9 @@ export class Board {
       } else {
         fallingTetromino.isFalling = false
       }
+      // console.log('state after update', this.state)
+    }
   }
-}
 
   tickOld() {
       if (this.hasFalling()) {
