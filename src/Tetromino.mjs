@@ -70,9 +70,6 @@ export class Tetromino {
     : this.orientations.length - 1,
     this.uniqueOrientations)
   }
-
-  
-
   // rotateRight() {
   //   const origShape = this.shape
   //   const newShape = []
