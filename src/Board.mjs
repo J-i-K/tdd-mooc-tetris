@@ -93,7 +93,7 @@ export class Board {
       for (let block in movingTetromino.blockList) {
         if (movingTetromino.blockList.filter(listBlock => listBlock.y === Number(movingTetromino.blockList[block].y - 1) && listBlock.x === Number(movingTetromino.blockList[block].x)).length !== 0) {
           console.log('there is another block that is below this one from the same tetromino')
-        } else if (movingTetromino.blockList[block].y - 1 === 0 || // Left side, cannot move
+        } else if (movingTetromino.blockList[block].y === 0 || // Left side, cannot move
         this.state[Number(movingTetromino.blockList[block].x)][Number(movingTetromino.blockList[block].y - 1)] !== '.') {// Not empty below, cannot move
           console.log('hit cannot move for block: ', movingTetromino.blockList[block])
           tetrominoCanMove = false
@@ -110,9 +110,10 @@ export class Board {
           block.y--
           this.state[Number(block.x)][Number(block.y)] = movingTetromino.shapeStyle
         })
-      } else {
-        fallingTetromino.isFalling = false
       }
+      // else {
+      //   movingTetromino.isFalling = false
+      // }
       // console.log('state after update', this.state)
     }
   }
@@ -142,9 +143,10 @@ export class Board {
           block.y++
           this.state[Number(block.x)][Number(block.y)] = movingTetromino.shapeStyle
         })
-      } else {
-        fallingTetromino.isFalling = false
       }
+      // else {
+      //   fallingTetromino.isFalling = false
+      // }
       // console.log('state after update', this.state)
     }
   }
@@ -166,7 +168,7 @@ export class Board {
       }
       if (tetrominoCanMove) {
         console.log('made it here?')
-        // console.log(this.state)
+        console.log(this.state)
         console.log(fallingTetromino.blockList.sort(function(a,b){return a.x - b.x}).reverse())
         fallingTetromino.blockList.sort(function(a,b){return a.x - b.x}).reverse().map(block => {
           this.state[Number(block.x)][Number(block.y)] = '.'
