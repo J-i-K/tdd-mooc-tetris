@@ -52,18 +52,22 @@ export class Board {
 
   drop(tetromino) {
     if (!this.hasFalling()) {
+      console.log('drop--')
       const blockList = []
+      console.log(tetromino.shape)
       for (let x in tetromino.shape) {
         for (let y in tetromino.shape[x]) {
           if (tetromino.shape[x][y] !== '.') {
             blockList.push({'x':Number(x),'y': Number(Math.floor(this.width / 2) - Number(y))})
             console.log('blockList: ', blockList, 'tetromino shape: ', tetromino.shape[x][y])
             this.state[Number(x)][Number(Math.floor(this.width / 2) - Number(y))] = tetromino.shape[x][y]
+            console.log(this.state)
           }
         }
       }
-      let newTetromino = {'id':Number(this.boardTetrominoes.length), 'shape': tetromino.shape,'isFalling': true, 'blockList': blockList}
+      let newTetromino = {'id':Number(this.boardTetrominoes.length), 'shapeStyle': tetromino.shapeStyle,'isFalling': true, 'blockList': blockList}
       this.boardTetrominoes.push(newTetromino)
+      console.log('--drop')
     } else if (this.hasFalling()) {
       throw new Error("already falling");
     }
@@ -100,16 +104,21 @@ export class Board {
       if (this.hasFalling()) {
         console.log('tick!')
         const fallingTetromino = this.boardTetrominoes.filter(tetromino => tetromino.isFalling === true)[0]
-        for (let block in fallingTetromino.blockList) {
+        // console.log(fallingTetromino)
+        // console.log(fallingTetromino.blockList.filter(function(blockA,blockB) { return blockA.x < blockB.x && blockA.y === blockB.y ? blockB : blockA }))
+        for (let block in fallingTetromino.blockList.filter(function(blockA,blockB) {
+          return blockA.x < blockB.x && blockA.y === blockB.y ? blockB : blockA
+        })) {
           console.log('get the ball rolling', fallingTetromino.blockList[block].x, this.height - 1)
           // console.log(this.state[0])
           if (fallingTetromino.blockList[block].x < this.height - 1) {// Not on bottom row
             console.log('not on bottom row, continuing')
             if (this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] === '.') {
               console.log('below is empty, hooray!')
-              this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] = fallingTetromino.shape
+              console.log('this is the below row before update', this.state[fallingTetromino.blockList[block].x + 1])
+              this.state[Number(fallingTetromino.blockList[block].x) + 1][Number(fallingTetromino.blockList[block].y)] = fallingTetromino.shapeStyle
               this.state[Number(fallingTetromino.blockList[block].x)][Number(fallingTetromino.blockList[block].y)] = '.'
-              console.log(this.state)
+              console.log('this is the below row after update', this.state[fallingTetromino.blockList[block].x + 1])
               this.boardTetrominoes[fallingTetromino.id].blockList[block].x++
             } else { // Below is not empty so we must stop
               console.log('so we hit this else here')
